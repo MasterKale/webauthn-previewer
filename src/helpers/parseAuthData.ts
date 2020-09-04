@@ -3,6 +3,19 @@ import { Buffer } from 'buffer/';
 
 import base64ToBase64URL from './base64ToBase64URL';
 import aaguidToString from './aaguidToString';
+import coseKeyTypeToString from './coseKeyTypeToString';
+import coseAlgToString from './coseAlgToString';
+
+enum COSEKEYS {
+  kty = 1,
+  alg = 3,
+  crv = -1,
+  x = -2,
+  y = -3,
+  // RSA
+  mod = -1,
+  exp = -2,
+}
 
 export default function parseAuthData(authData: ArrayBuffer): AuthenticatorData {
   let buffer = Buffer.from(authData);
@@ -46,26 +59,29 @@ export default function parseAuthData(authData: ArrayBuffer): AuthenticatorData 
     credentialID = base64ToBase64URL(credentialIDBuffer.toString('base64'));
 
     const pubKey = decode(buffer.toString('base64'), 'base64');
-    let x;
-    let y;
-    if (pubKey) {
-      if (pubKey[-2]) {
-        x = Buffer.from(pubKey[-2]).toString('hex');
-      }
-
-      if (pubKey[-3]) {
-        y = Buffer.from(pubKey[-3]).toString('hex');
-      }
-    }
 
     // TODO: Handle this differently if this is an RSA key
     credentialPublicKey = {
       keyType: pubKey?.[1],
-      algorithm: pubKey?.[3],
-      curve: pubKey?.[-1],
-      x,
-      y,
     };
+
+    if (pubKey) {
+      const kty = pubKey[COSEKEYS.kty];
+
+      credentialPublicKey.keyType = coseKeyTypeToString(kty);
+      credentialPublicKey.algorithm = coseAlgToString(pubKey[COSEKEYS.alg]);
+
+      if (kty === 3) {
+        // RSA
+        credentialPublicKey.modulus = Buffer.from(pubKey[COSEKEYS.mod]).toString('hex');
+        credentialPublicKey.exponent = parseInt(Buffer.from(pubKey[COSEKEYS.exp]).toString('hex'), 16);
+      } else {
+        // Everything else
+        credentialPublicKey.curve = pubKey[COSEKEYS.crv];
+        credentialPublicKey.x = Buffer.from(pubKey[COSEKEYS.x]).toString('hex');
+        credentialPublicKey.y = Buffer.from(pubKey[COSEKEYS.y]).toString('hex');
+      }
+    }
   }
 
   return {
@@ -94,9 +110,11 @@ type AuthenticatorData = {
 };
 
 type ParsedCredentialPublicKey = {
-  keyType?: number;
-  algorithm?: number;
-  curve?: Buffer;
+  keyType?: string;
+  algorithm?: string;
+  curve?: number | string;
   x?: string;
   y?: string;
+  modulus?: string;
+  exponent?: number;
 };
