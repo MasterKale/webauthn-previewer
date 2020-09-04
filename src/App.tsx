@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import ReactJson from 'react-json-view'
 
 import decodeClientDataJSON from './helpers/decodeClientDataJSON';
@@ -18,14 +18,10 @@ function App() {
   const [attestation, setAttestation] = useState<string>('');
   const [decoded, setDecoded] = useState<object>({});
 
-  const handleAttestationChange = useCallback((event) => {
-    const newAttestation = event.target.value;
-
-    setAttestation(newAttestation);
-
+  useEffect(() => {
     let credential;
     try {
-      credential = JSON.parse(newAttestation);
+      credential = JSON.parse(attestation);
     } catch (err) {
       console.warn('bad input, returning', err);
       return;
@@ -53,6 +49,10 @@ function App() {
         attestationObject,
       },
     });
+  }, [attestation]);
+
+  const handleAttestationChange = useCallback((event) => {
+    setAttestation(event.target.value);
   }, [setAttestation]);
 
   return <div className="App">
