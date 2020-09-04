@@ -3,52 +3,19 @@ import { decode } from "cbor-sync";
 /**
  * Convert response.attestationObject to a dev-friendly format
  */
-export default function decodeAttestationObject(base64urlString: string): AttestationObjectRaw {
-  const atteObjRaw: AttestationObjectRaw = decode(base64urlString, 'base64');
-  return atteObjRaw;
+export default function decodeAttestationObject(base64urlString: string): AttestationObject {
+  return decode(base64urlString, 'base64');
 }
 
-export type ClientDataJSON = {
-  type: string;
-  challenge: string;
-  origin: string;
-  crossOrigin?: boolean;
-  tokenBinding?: {
-    id?: string;
-    status: 'present' | 'supported' | 'not-supported';
-  };
-};
-
-export type AttestationObjectRaw = {
+export type AttestationObject = {
   fmt: ATTESTATION_FORMATS;
   attStmt: AttestationStatement;
   authData: ArrayBuffer;
 };
 
-export type AttestationObject = {
-  fmt: ATTESTATION_FORMATS;
-  attStmt: AttestationStatement;
-  authData: AuthenticatorData;
-};
-
-type AttestationStatement = {};
-
-type AuthenticatorData = {
-  rpIdHash: Buffer;
-  flagsBuf: Buffer;
-  flags: {
-    up: boolean;
-    uv: boolean;
-    at: boolean;
-    ed: boolean;
-    flagsInt: number;
-  };
-  counter: number;
-  counterBuf: Buffer;
-  aaguid?: Buffer | undefined;
-  credentialID?: Buffer | undefined;
-  credentialPublicKey?: Buffer | undefined;
-  extensionsDataBuffer?: Buffer | undefined;
+type AttestationStatement = {
+  alg: number;
+  sig: ArrayBuffer;
 };
 
 enum ATTESTATION_FORMATS {
