@@ -1,5 +1,6 @@
 import React, { FunctionComponent, useState, useCallback, useEffect } from 'react';
 import ReactJson from 'react-json-view'
+import { encode, decode } from 'universal-base64url';
 
 import decodeClientDataJSON from '../helpers/decodeClientDataJSON';
 import decodeAttestationObject from '../helpers/decodeAttestationObject';
@@ -26,12 +27,32 @@ const AttestationPreviewer: FunctionComponent<Props> = (props: Props) => {
   const [decoded, setDecoded] = useState<object>({});
 
   /**
+   * Attempt to load query params on mount
+   */
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+
+    // Attestation
+    const queryAttestation = searchParams.get(QUERY_PARAM.ATTESTATION);
+    if (queryAttestation !== null) {
+      // Decode Base64URL-encoded attestation
+      setAttestation(decode(queryAttestation));
+    }
+  }, []);
+
+  /**
    * Parse the attestation
    */
   useEffect(() => {
     if (!attestation) {
       return;
     }
+
+    // Update URL with attestation as query param
+    const searchParams = new URLSearchParams(window.location.search);
+    searchParams.set(QUERY_PARAM.ATTESTATION, encode(attestation));
+    const newPathQuery = `${window.location.pathname}?${searchParams.toString()}`;
+    window.history.pushState(null, '', newPathQuery);
 
     let credential;
     try {
