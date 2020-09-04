@@ -3,6 +3,7 @@ import ReactJson from 'react-json-view'
 
 import decodeClientDataJSON from './helpers/decodeClientDataJSON';
 import decodeAttestationObject from './helpers/decodeAttestationObject';
+import parseAuthData from './helpers/parseAuthData';
 
 const inputPlaceholder = `{
   "id": "...",
@@ -41,12 +42,16 @@ function App() {
 
     const clientDataJSON = decodeClientDataJSON(response.clientDataJSON);
     const attestationObject = decodeAttestationObject(response.attestationObject);
+    const authData = parseAuthData(attestationObject.authData);
 
     setDecoded({
       ...credential,
       response: {
         clientDataJSON,
-        attestationObject,
+        attestationObject: {
+          ...attestationObject,
+          authData,
+        },
       },
     });
   }, [attestation]);
