@@ -2,6 +2,7 @@ import { decode } from 'cbor-sync';
 import { Buffer } from 'buffer/';
 
 import base64ToBase64URL from './base64ToBase64URL';
+import aaguidToString from './aaguidToString';
 
 export default function parseAuthData(authData: ArrayBuffer): AuthenticatorData {
   let buffer = Buffer.from(authData);
@@ -57,6 +58,7 @@ export default function parseAuthData(authData: ArrayBuffer): AuthenticatorData 
       }
     }
 
+    // TODO: Handle this differently if this is an RSA key
     credentialPublicKey = {
       keyType: pubKey?.[1],
       algorithm: pubKey?.[3],
@@ -67,17 +69,17 @@ export default function parseAuthData(authData: ArrayBuffer): AuthenticatorData 
   }
 
   return {
-    rpIdHash,
+    rpIdHash: rpIdHash.toString('hex'),
     flags,
     counter,
-    aaguid,
+    aaguid: aaguid && aaguidToString(aaguid),
     credentialID,
     credentialPublicKey,
   };
 }
 
 type AuthenticatorData = {
-  rpIdHash: Buffer;
+  rpIdHash: string;
   flags: {
     userPresent: boolean;
     userVerified: boolean;
@@ -85,7 +87,7 @@ type AuthenticatorData = {
     extensionData: boolean;
   };
   counter: number;
-  aaguid?: Buffer;
+  aaguid?: string;
   credentialID?: string;
   credentialPublicKey?: ParsedCredentialPublicKey;
   // extensionsDataBuffer?: Buffer;
