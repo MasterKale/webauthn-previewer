@@ -25,6 +25,7 @@ const inputPlaceholder = `{
 const AttestationPreviewer: FunctionComponent<Props> = (props: Props) => {
   const [attestation, setAttestation] = useState<string>('');
   const [decoded, setDecoded] = useState<object>({});
+  const [error, setError] = useState<string>('');
 
   /**
    * Attempt to load query params on mount
@@ -59,6 +60,7 @@ const AttestationPreviewer: FunctionComponent<Props> = (props: Props) => {
       credential = JSON.parse(attestation);
     } catch (err) {
       console.warn('bad input, returning', err);
+      setError("This JSON couldn't be parsed, is it valid?");
       return;
     }
 
@@ -66,28 +68,37 @@ const AttestationPreviewer: FunctionComponent<Props> = (props: Props) => {
 
     if (!response) {
       console.warn('missing response, returning');
+      setError('The "response" property is missing from this JSON');
       return;
     }
 
     if (!response.clientDataJSON || !response.attestationObject) {
       console.warn('missing clientDataJSON or attestationObject, returning');
+      setError('The "clientDataJSON" and/or "attestationObject" properties are missing from "response"');
       return;
     }
 
-    const clientDataJSON = decodeClientDataJSON(response.clientDataJSON);
-    const attestationObject = decodeAttestationObject(response.attestationObject);
-    const authData = parseAuthData(attestationObject.authData);
+    setError('');
 
-    setDecoded({
-      ...credential,
-      response: {
-        clientDataJSON,
-        attestationObject: {
-          ...attestationObject,
-          authData,
+    try {
+      const clientDataJSON = decodeClientDataJSON(response.clientDataJSON);
+      const attestationObject = decodeAttestationObject(response.attestationObject);
+      const authData = parseAuthData(attestationObject.authData);
+
+      setDecoded({
+        ...credential,
+        response: {
+          clientDataJSON,
+          attestationObject: {
+            ...attestationObject,
+            authData,
+          },
         },
-      },
-    });
+      });
+    } catch (err) {
+      console.error(err);
+      setError(`There was an error when parsing this attestation (see console for more info): ${err}`);
+    }
   }, [attestation]);
 
   const handleAttestationChange = useCallback((event) => {
@@ -104,6 +115,7 @@ const AttestationPreviewer: FunctionComponent<Props> = (props: Props) => {
         onChange={handleAttestationChange}
         placeholder={inputPlaceholder}
       />
+      {error && <span style={{ color: 'red '}}>{error}</span>}
       <h4>Parsed</h4>
       <div style={{ overflowX: 'scroll' }}>
         <ReactJson
