@@ -1,10 +1,10 @@
-import base64URLToJSON from './base64URLToJSON';
+import { decode } from "universal-base64url";
 
 /**
  * Convert response.clientDataJSON to a dev-friendly format
  */
 export default function decodeClientDataJSON(base64urlString: string): ClientDataJSON {
-  return base64URLToJSON<ClientDataJSON>(base64urlString);
+  return JSON.parse(decode(base64urlString));
 }
 
 export type ClientDataJSON = {
