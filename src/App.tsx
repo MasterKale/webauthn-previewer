@@ -62,9 +62,10 @@ function App() {
 
   return <div className="App" style={{ padding: 10 }}>
     <h1>WebAuthn Debugger</h1>
+    <h2>Tools for debugging WebAuthn responses</h2>
     <hr/>
-    <h2>Attestation Previewer</h2>
-    <h3>Input</h3>
+    <h3>Attestation Previewer</h3>
+    <h4>Input</h4>
     <textarea
       style={{ width: '100%', height: 250 }}
       value={attestation}
@@ -77,8 +78,8 @@ function App() {
       collapseStringsAfterLength={50}
     />
     <hr/>
-    <h2>Assertion</h2>
-    <h3>Coming Soon...?</h3>
+    <h3>Assertion</h3>
+    <h4>Coming Soon...?</h4>
   </div>;
 }
 
