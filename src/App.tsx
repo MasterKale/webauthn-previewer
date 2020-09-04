@@ -60,10 +60,10 @@ function App() {
     setAttestation(event.target.value);
   }, [setAttestation]);
 
-  return <div className="App">
-    <h1>WebAuthn Previewer</h1>
+  return <div className="App" style={{ padding: 10 }}>
+    <h1>WebAuthn Debugger</h1>
     <hr/>
-    <h2>Attestation</h2>
+    <h2>Attestation Previewer</h2>
     <h3>Input</h3>
     <textarea
       style={{ width: '100%', height: 250 }}
