@@ -25,7 +25,6 @@ export default function parseAuthData(authData: ArrayBuffer): AuthenticatorData 
   buffer = buffer.slice(4);
 
   const counter = counterBuf.readUInt32BE(0);
-  console.log(counter);
 
   let aaguid: Buffer | undefined = undefined;
   let credentialID: string | undefined = undefined;
