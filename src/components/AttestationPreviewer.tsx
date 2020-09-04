@@ -97,7 +97,7 @@ const AttestationPreviewer: FunctionComponent<Props> = (props: Props) => {
   return (
     <>
       <h3>Attestation Previewer</h3>
-      <h4>Input</h4>
+      <h4>Input (JSON)</h4>
       <textarea
         style={{ width: '100%', height: 250 }}
         value={attestation}

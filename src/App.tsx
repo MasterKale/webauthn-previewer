@@ -10,7 +10,7 @@ function App() {
       <hr/>
       <AttestationPreviewer />
       <hr/>
-      <h3>Assertion</h3>
+      <h3>Assertion Previewer</h3>
       <h4>Coming Soon...?</h4>
     </div>
   );
