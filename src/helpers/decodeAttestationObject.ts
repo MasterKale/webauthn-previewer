@@ -1,10 +1,10 @@
-import cborToJSON from './cborToJSON';
+import { decode } from "cbor-sync";
 
 /**
  * Convert response.attestationObject to a dev-friendly format
  */
 export default function decodeAttestationObject(base64urlString: string): AttestationObjectRaw {
-  const atteObjRaw = cborToJSON<AttestationObjectRaw>(base64urlString);
+  const atteObjRaw: AttestationObjectRaw = decode(base64urlString, 'base64');
   return atteObjRaw;
 }
 
