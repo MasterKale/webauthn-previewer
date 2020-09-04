@@ -1,3 +1,6 @@
 export default function base64ToBase64URL(input: string): string {
-  return input.replace(/\+/g, '-').replace(/\//g, '_');
+  return input
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=/g, '');
 }
