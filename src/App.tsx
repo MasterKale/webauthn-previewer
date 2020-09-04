@@ -72,11 +72,13 @@ function App() {
       onChange={handleAttestationChange}
       placeholder={inputPlaceholder}
     />
-    <h3>Parsed</h3>
-    <ReactJson
-      src={decoded}
-      collapseStringsAfterLength={50}
-    />
+    <h4>Parsed</h4>
+    <div style={{ overflowX: 'scroll' }}>
+      <ReactJson
+        src={decoded}
+        collapseStringsAfterLength={50}
+      />
+    </div>
     <hr/>
     <h3>Assertion</h3>
     <h4>Coming Soon...?</h4>
