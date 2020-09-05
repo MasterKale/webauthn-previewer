@@ -1,4 +1,5 @@
 import { decode } from "cbor-sync";
+import { Buffer } from 'buffer/';
 
 /**
  * Convert response.attestationObject to a dev-friendly format
@@ -13,9 +14,14 @@ export type AttestationObject = {
   authData: ArrayBuffer;
 };
 
-type AttestationStatement = {
-  alg: number;
-  sig: ArrayBuffer;
+export type AttestationStatement = {
+  sig?: Buffer;
+  alg?: number;
+  x5c?: Buffer[];
+  response?: Buffer;
+  ver?: string;
+  certInfo?: Buffer;
+  pubArea?: Buffer;
 };
 
 enum ATTESTATION_FORMATS {
