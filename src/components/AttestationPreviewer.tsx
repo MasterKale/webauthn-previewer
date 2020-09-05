@@ -5,6 +5,7 @@ import { encode, decode } from 'universal-base64url';
 import decodeClientDataJSON from '../helpers/decodeClientDataJSON';
 import decodeAttestationObject from '../helpers/decodeAttestationObject';
 import parseAuthData from '../helpers/parseAuthData';
+import parseAttestationStatement from '../helpers/parseAttestationStatement';
 
 interface Props {}
 
@@ -84,6 +85,7 @@ const AttestationPreviewer: FunctionComponent<Props> = (props: Props) => {
       const clientDataJSON = decodeClientDataJSON(response.clientDataJSON);
       const attestationObject = decodeAttestationObject(response.attestationObject);
       const authData = parseAuthData(attestationObject.authData);
+      const attStmt = parseAttestationStatement(attestationObject.attStmt);
 
       setDecoded({
         ...credential,
@@ -91,6 +93,7 @@ const AttestationPreviewer: FunctionComponent<Props> = (props: Props) => {
           clientDataJSON,
           attestationObject: {
             ...attestationObject,
+            attStmt,
             authData,
           },
         },
