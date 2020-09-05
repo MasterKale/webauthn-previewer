@@ -124,6 +124,8 @@ const AttestationPreviewer: FunctionComponent<Props> = (props: Props) => {
         <ReactJson
           src={decoded}
           collapseStringsAfterLength={50}
+          collapsed={5}
+          displayDataTypes={false}
         />
       </div>
     </>
