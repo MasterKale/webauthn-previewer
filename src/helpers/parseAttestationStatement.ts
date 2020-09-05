@@ -32,15 +32,12 @@ export default function parseAttestationStatement(statement: AttestationStatemen
     const jwt = statement.response.toString('utf8');
     const jwtParts = jwt.split('.');
 
-    const header = JSON.parse(decode(jwtParts[0]));
-    const payload = JSON.parse(decode(jwtParts[1]));
-    const signature = jwtParts[2];
+    const header: SafetyNetJWTHeader = JSON.parse(decode(jwtParts[0]));
+    const payload: SafetyNetJWTPayload = JSON.parse(decode(jwtParts[1]));
+    const signature: SafetyNetJWTSignature = jwtParts[2];
 
-    let headerX5C = header.x5c;
-    if (Array.isArray(headerX5C)) {
-      const certBuffers = header.x5c.map((cert: string) => Buffer.from(cert, 'base64'));
-      headerX5C = x5cToStrings(certBuffers);
-    }
+    const certBuffers = header.x5c.map((cert: string) => Buffer.from(cert, 'base64'));
+    const headerX5C = x5cToStrings(certBuffers);
 
     toReturn.response = {
       header: {
@@ -96,3 +93,20 @@ type ParsedAttestationStatement = {
   certInfo?: string;
   pubArea?: string;
 };
+
+type SafetyNetJWTHeader = {
+  alg: string;
+  x5c: string[];
+};
+
+type SafetyNetJWTPayload = {
+  nonce: string;
+  timestampMs: number;
+  apkPackageName: string;
+  apkDigestSha256: string;
+  ctsProfileMatch: boolean;
+  apkCertificateDigestSha256: string[];
+  basicIntegrity: boolean;
+};
+
+type SafetyNetJWTSignature = string;
