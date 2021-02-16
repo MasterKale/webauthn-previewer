@@ -1,6 +1,7 @@
 import React from "react";
 
 import AttestationPreviewer from './components/AttestationPreviewer';
+import AssertionPreviewer from './components/AssertionPreviewer';
 
 function App() {
   return (
@@ -10,8 +11,7 @@ function App() {
       <hr/>
       <AttestationPreviewer />
       <hr/>
-      <h3>Assertion Previewer</h3>
-      <h4>Coming Soon...?</h4>
+      <AssertionPreviewer />
     </div>
   );
 }
