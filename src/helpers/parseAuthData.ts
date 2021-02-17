@@ -84,14 +84,25 @@ export default function parseAuthData(authData: ArrayBuffer): AuthenticatorData 
     }
   }
 
-  return {
+  const toReturn: AuthenticatorData = {
     rpIdHash: rpIdHash.toString('hex'),
     flags,
     counter,
-    aaguid: aaguid && aaguidToString(aaguid),
-    credentialID,
-    credentialPublicKey,
   };
+
+  if (aaguid) {
+    toReturn.aaguid = aaguidToString(aaguid)
+  }
+
+  if (credentialID) {
+    toReturn.credentialID = credentialID;
+  }
+
+  if (credentialPublicKey) {
+    toReturn.credentialPublicKey = credentialPublicKey;
+  }
+
+  return toReturn;
 }
 
 type AuthenticatorData = {
