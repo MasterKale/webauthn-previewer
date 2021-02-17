@@ -6,6 +6,7 @@ import { Buffer } from 'buffer';
 
 import decodeClientDataJSON from '../helpers/decodeClientDataJSON';
 import parseAuthData from '../helpers/parseAuthData';
+import updateQueryParam from '../helpers/updateQueryParam';
 
 
 interface Props {}
@@ -49,15 +50,13 @@ const AssertionPreviewer: FunctionComponent<Props> = (props: Props) => {
    * Parse the assertion
    */
   useEffect(() => {
+    // Update URL with assertion as query param
+    updateQueryParam(QUERY_PARAM.ASSERTION, assertion);
+
     if (!assertion) {
+      setDecoded({});
       return;
     }
-
-    // Update URL with assertion as query param
-    const searchParams = new URLSearchParams(window.location.search);
-    searchParams.set(QUERY_PARAM.ASSERTION, encode(assertion));
-    const newPathQuery = `${window.location.pathname}?${searchParams.toString()}`;
-    window.history.pushState(null, '', newPathQuery);
 
     let credential: AssertionCredentialJSON;
     try {

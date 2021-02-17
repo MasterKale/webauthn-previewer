@@ -6,6 +6,7 @@ import decodeClientDataJSON from '../helpers/decodeClientDataJSON';
 import decodeAttestationObject from '../helpers/decodeAttestationObject';
 import parseAuthData from '../helpers/parseAuthData';
 import parseAttestationStatement from '../helpers/parseAttestationStatement';
+import updateQueryParam from '../helpers/updateQueryParam';
 
 interface Props {}
 
@@ -46,15 +47,12 @@ const AttestationPreviewer: FunctionComponent<Props> = (props: Props) => {
    * Parse the attestation
    */
   useEffect(() => {
+    updateQueryParam(QUERY_PARAM.ATTESTATION, attestation);
+
     if (!attestation) {
+      setDecoded({});
       return;
     }
-
-    // Update URL with attestation as query param
-    const searchParams = new URLSearchParams(window.location.search);
-    searchParams.set(QUERY_PARAM.ATTESTATION, encode(attestation));
-    const newPathQuery = `${window.location.pathname}?${searchParams.toString()}`;
-    window.history.pushState(null, '', newPathQuery);
 
     let credential;
     try {
