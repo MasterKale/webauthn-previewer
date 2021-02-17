@@ -42,7 +42,8 @@ export default function parseAuthData(authData: ArrayBuffer): AuthenticatorData 
 
   let aaguid: Buffer | undefined = undefined;
   let credentialID: string | undefined = undefined;
-  let credentialPublicKey: ParsedCredentialPublicKey | undefined = undefined;
+  let credentialPublicKey: string | undefined = undefined;
+  let parsedCredentialPublicKey: ParsedCredentialPublicKey | undefined = undefined;
 
   if (flags.attestedData) {
     aaguid = buffer.slice(0, 16);
@@ -57,29 +58,30 @@ export default function parseAuthData(authData: ArrayBuffer): AuthenticatorData 
 
     // Base64 to Base64URL
     credentialID = base64ToBase64URL(credentialIDBuffer.toString('base64'));
+    credentialPublicKey = base64ToBase64URL(buffer.toString('base64'))
 
     const pubKey = decode(buffer.toString('base64'), 'base64');
 
     // TODO: Handle this differently if this is an RSA key
-    credentialPublicKey = {
+    parsedCredentialPublicKey = {
       keyType: pubKey?.[1],
     };
 
     if (pubKey) {
       const kty = pubKey[COSEKEYS.kty];
 
-      credentialPublicKey.keyType = coseKeyTypeToString(kty);
-      credentialPublicKey.algorithm = coseAlgToString(pubKey[COSEKEYS.alg]);
+      parsedCredentialPublicKey.keyType = coseKeyTypeToString(kty);
+      parsedCredentialPublicKey.algorithm = coseAlgToString(pubKey[COSEKEYS.alg]);
 
       if (kty === 3) {
         // RSA
-        credentialPublicKey.modulus = Buffer.from(pubKey[COSEKEYS.mod]).toString('hex');
-        credentialPublicKey.exponent = parseInt(Buffer.from(pubKey[COSEKEYS.exp]).toString('hex'), 16);
+        parsedCredentialPublicKey.modulus = Buffer.from(pubKey[COSEKEYS.mod]).toString('hex');
+        parsedCredentialPublicKey.exponent = parseInt(Buffer.from(pubKey[COSEKEYS.exp]).toString('hex'), 16);
       } else {
         // Everything else
-        credentialPublicKey.curve = pubKey[COSEKEYS.crv];
-        credentialPublicKey.x = Buffer.from(pubKey[COSEKEYS.x]).toString('hex');
-        credentialPublicKey.y = Buffer.from(pubKey[COSEKEYS.y]).toString('hex');
+        parsedCredentialPublicKey.curve = pubKey[COSEKEYS.crv];
+        parsedCredentialPublicKey.x = Buffer.from(pubKey[COSEKEYS.x]).toString('hex');
+        parsedCredentialPublicKey.y = Buffer.from(pubKey[COSEKEYS.y]).toString('hex');
       }
     }
   }
@@ -100,6 +102,7 @@ export default function parseAuthData(authData: ArrayBuffer): AuthenticatorData 
 
   if (credentialPublicKey) {
     toReturn.credentialPublicKey = credentialPublicKey;
+    toReturn.parsedCredentialPublicKey = parsedCredentialPublicKey;
   }
 
   return toReturn;
@@ -116,7 +119,8 @@ type AuthenticatorData = {
   counter: number;
   aaguid?: string;
   credentialID?: string;
-  credentialPublicKey?: ParsedCredentialPublicKey;
+  credentialPublicKey?: string;
+  parsedCredentialPublicKey?: ParsedCredentialPublicKey;
   // extensionsDataBuffer?: Buffer;
 };
 
