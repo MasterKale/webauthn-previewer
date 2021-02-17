@@ -18,7 +18,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-json-view": "^1.21.1",
-    "react-scripts": "3.4.3",
+    "react-scripts": "4.0.2",
     "typescript": "^3.7.5",
     "universal-base64url": "^1.1.0"
   },
