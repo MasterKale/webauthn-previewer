@@ -5,6 +5,7 @@ import { decode } from 'universal-base64url';
 import { AttestationStatement } from './decodeAttestationObject';
 import coseAlgToString from './coseAlgToString';
 import x5cToStrings from './x5cToStrings';
+import base64ToBase64URL from './base64ToBase64URL';
 
 /**
  * Break down attestation statement properties
@@ -19,7 +20,7 @@ export default function parseAttestationStatement(statement: AttestationStatemen
 
   // Packed, TPM, AndroidKey, FIDO-U2F
   if (statement.sig) {
-    toReturn.sig = Buffer.from(statement.sig).toString('hex');
+    toReturn.sig = base64ToBase64URL(Buffer.from(statement.sig).toString('base64'));
   }
 
   // Packed, TPM, AndroidKey, FIDO-U2F
@@ -57,13 +58,13 @@ export default function parseAttestationStatement(statement: AttestationStatemen
   // TPM
   if (statement.certInfo) {
     // TODO: Parse this TPM data structure
-    toReturn.certInfo = Buffer.from(statement.certInfo).toString('hex');
+    toReturn.certInfo = base64ToBase64URL(Buffer.from(statement.certInfo).toString('base64'));
   }
 
   // TPM
   if (statement.pubArea) {
     // TODO: Parse this TPM data structure
-    toReturn.pubArea = Buffer.from(statement.pubArea).toString('hex');
+    toReturn.pubArea = base64ToBase64URL(Buffer.from(statement.pubArea).toString('base64'));
   }
 
   return toReturn;

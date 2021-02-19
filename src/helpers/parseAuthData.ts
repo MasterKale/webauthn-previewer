@@ -75,19 +75,25 @@ export default function parseAuthData(authData: ArrayBuffer): AuthenticatorData 
 
       if (kty === 3) {
         // RSA
-        parsedCredentialPublicKey.modulus = Buffer.from(pubKey[COSEKEYS.mod]).toString('hex');
+        parsedCredentialPublicKey.modulus = base64ToBase64URL(
+          Buffer.from(pubKey[COSEKEYS.mod]).toString('base64')
+        );
         parsedCredentialPublicKey.exponent = parseInt(Buffer.from(pubKey[COSEKEYS.exp]).toString('hex'), 16);
       } else {
         // Everything else
         parsedCredentialPublicKey.curve = pubKey[COSEKEYS.crv];
-        parsedCredentialPublicKey.x = Buffer.from(pubKey[COSEKEYS.x]).toString('hex');
-        parsedCredentialPublicKey.y = Buffer.from(pubKey[COSEKEYS.y]).toString('hex');
+        parsedCredentialPublicKey.x = base64ToBase64URL(
+          Buffer.from(pubKey[COSEKEYS.x]).toString('base64')
+        );
+        parsedCredentialPublicKey.y = base64ToBase64URL(
+          Buffer.from(pubKey[COSEKEYS.y]).toString('base64')
+        );
       }
     }
   }
 
   const toReturn: AuthenticatorData = {
-    rpIdHash: rpIdHash.toString('hex'),
+    rpIdHash: base64ToBase64URL(rpIdHash.toString('base64')),
     flags,
     counter,
   };
