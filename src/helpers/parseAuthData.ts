@@ -80,14 +80,19 @@ export default function parseAuthData(authData: ArrayBuffer): AuthenticatorData 
         );
         parsedCredentialPublicKey.exponent = parseInt(Buffer.from(pubKey[COSEKEYS.exp]).toString('hex'), 16);
       } else {
-        // Everything else
+        // Everything else, including EC2 and OKP
         parsedCredentialPublicKey.curve = pubKey[COSEKEYS.crv];
+
         parsedCredentialPublicKey.x = base64ToBase64URL(
           Buffer.from(pubKey[COSEKEYS.x]).toString('base64')
         );
-        parsedCredentialPublicKey.y = base64ToBase64URL(
-          Buffer.from(pubKey[COSEKEYS.y]).toString('base64')
-        );
+
+        // y isn't present in OKP certs
+        if (pubKey[COSEKEYS.y]) {
+          parsedCredentialPublicKey.y = base64ToBase64URL(
+            Buffer.from(pubKey[COSEKEYS.y]).toString('base64')
+          );
+        }
       }
     }
   }
