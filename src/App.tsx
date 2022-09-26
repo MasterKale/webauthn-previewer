@@ -1,7 +1,6 @@
 import React from "react";
 
-import AttestationPreviewer from './components/AttestationPreviewer';
-import AssertionPreviewer from './components/AssertionPreviewer';
+import { CredentialPreviewer } from './components/CredentialPreviewer';
 
 function App() {
   return (
@@ -9,9 +8,7 @@ function App() {
       <h1>WebAuthn Debugger</h1>
       <h2>Tools for debugging WebAuthn responses</h2>
       <hr/>
-      <AttestationPreviewer />
-      <hr/>
-      <AssertionPreviewer />
+      <CredentialPreviewer />
     </div>
   );
 }
