@@ -121,15 +121,7 @@ export const CredentialPreviewer: FunctionComponent<Props> = (props: Props) => {
 };
 
 function isRegistrationCredential(credential: any): credential is RegistrationCredentialJSON {
-  if (
-    credential.response
-    && credential.response.clientDataJSON
-    && credential.response.attestationObject
-  ) {
-    return true;
-  }
-
-  return false;
+  return !!(credential.response?.attestationObject);
 }
 
 function isAuthenticationCredential(credential: any): credential is AuthenticationCredentialJSON {
