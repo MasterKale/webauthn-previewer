@@ -119,6 +119,7 @@ export const CredentialPreviewer: FunctionComponent<Props> = (props: Props) => {
         value={rawCredential}
         onChange={handleResponseChange}
         placeholder={inputPlaceholder}
+        autoComplete="off"
       />
       {error && <span style={{ color: 'red '}}>{error}</span>}
       <h4>{parsedTitle}</h4>
