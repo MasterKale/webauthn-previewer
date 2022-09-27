@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState, useCallback, useEffect } from 'react';
+import React, { FunctionComponent, useState, useEffect } from 'react';
 import ReactJson from 'react-json-view'
 import { decode } from 'universal-base64url';
 import { RegistrationCredentialJSON, AuthenticationCredentialJSON } from '@simplewebauthn/typescript-types';
@@ -12,7 +12,7 @@ import updateQueryParam from '../helpers/updateQueryParam';
 type Props = {}
 
 enum QUERY_PARAM {
-  RESPONSE = 'response',
+  CREDENTIAL = 'credential',
 };
 
 const inputPlaceholder = `{
@@ -23,8 +23,6 @@ const inputPlaceholder = `{
   },
   "type": "public-key"
 }`;
-
-type CredentialType = RegistrationCredentialJSON | AuthenticationCredentialJSON;
 
 export const CredentialPreviewer: FunctionComponent<Props> = (props: Props) => {
   const [rawCredential, setCredential] = useState<string>('');
@@ -38,7 +36,7 @@ export const CredentialPreviewer: FunctionComponent<Props> = (props: Props) => {
     const searchParams = new URLSearchParams(window.location.search);
 
     // Attestation
-    const queryAttestation = searchParams.get(QUERY_PARAM.RESPONSE);
+    const queryAttestation = searchParams.get(QUERY_PARAM.CREDENTIAL);
     if (queryAttestation !== null) {
       // Decode Base64URL-encoded attestation
       setCredential(decode(queryAttestation));
@@ -46,7 +44,7 @@ export const CredentialPreviewer: FunctionComponent<Props> = (props: Props) => {
   }, []);
 
   useEffect(() => {
-    updateQueryParam(QUERY_PARAM.RESPONSE, rawCredential);
+    updateQueryParam(QUERY_PARAM.CREDENTIAL, rawCredential);
 
     setError('');
 
