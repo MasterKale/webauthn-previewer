@@ -51,10 +51,9 @@ export const CredentialPreviewer: FunctionComponent<Props> = (props: Props) => {
   useEffect(() => {
     updateQueryParam(QUERY_PARAM.CREDENTIAL, rawCredential);
 
-    setError('');
+    showError('');
 
     if (!rawCredential) {
-      setDecoded({});
       return;
     }
 
@@ -63,7 +62,7 @@ export const CredentialPreviewer: FunctionComponent<Props> = (props: Props) => {
       credential = JSON.parse(rawCredential);
     } catch (err) {
       console.warn('bad input, returning', err);
-      setError("This JSON couldn't be parsed, is it valid?");
+      showError("This JSON couldn't be parsed, is it valid?");
       return;
     }
 
@@ -71,7 +70,7 @@ export const CredentialPreviewer: FunctionComponent<Props> = (props: Props) => {
 
     if (!response) {
       console.warn('missing response, returning');
-      setError('The "response" property is missing from this JSON');
+      showError('The "response" property is missing from this JSON');
       return;
     }
 
@@ -83,7 +82,7 @@ export const CredentialPreviewer: FunctionComponent<Props> = (props: Props) => {
         });
       } catch (err) {
         console.error(err);
-        setError(`There was an error when parsing this registration credential (see console for more info): ${err}`);
+        showError(`There was an error when parsing this registration credential (see console for more info): ${err}`);
       }
     } else if (isAuthenticationCredential(credential)) {
       try {
@@ -93,16 +92,20 @@ export const CredentialPreviewer: FunctionComponent<Props> = (props: Props) => {
         });
       } catch (err) {
         console.error(err);
-        setError(`There was an error when parsing this authentication credential (see console for more info): ${err}`);
+        showError(`There was an error when parsing this authentication credential (see console for more info): ${err}`);
       }
     } else {
-      setError('This JSON is unrecognizable as valid WebAuthn responses');
+      showError('This JSON is unrecognizable as a valid WebAuthn response')
     }
-
   }, [rawCredential]);
 
   function handleResponseChange(event: any) {
     setCredential(event.target.value);
+  }
+
+  function showError(message: string): void {
+    setError(message);
+    setDecoded(undefined);
   }
 
   let parsedTitle = 'Parsed';
