@@ -24,9 +24,14 @@ const inputPlaceholder = `{
   "type": "public-key"
 }`;
 
+type DecodedCredential = {
+  type: 'Registration' | 'Authentication',
+  value: object,
+};
+
 export const CredentialPreviewer: FunctionComponent<Props> = (props: Props) => {
   const [rawCredential, setCredential] = useState<string>('');
-  const [decoded, setDecoded] = useState<object>({});
+  const [decoded, setDecoded] = useState<DecodedCredential | undefined>();
   const [error, setError] = useState<string>('');
 
   /**
@@ -72,14 +77,20 @@ export const CredentialPreviewer: FunctionComponent<Props> = (props: Props) => {
 
     if (isRegistrationCredential(credential)) {
       try {
-        setDecoded(decodeRegistrationCredential(credential));
+        setDecoded({
+          type: 'Registration',
+          value: decodeRegistrationCredential(credential),
+        });
       } catch (err) {
         console.error(err);
         setError(`There was an error when parsing this registration credential (see console for more info): ${err}`);
       }
     } else if (isAuthenticationCredential(credential)) {
       try {
-        setDecoded(decodeAuthenticationCredential(credential));
+        setDecoded({
+          type: 'Authentication',
+          value: decodeAuthenticationCredential(credential),
+        });
       } catch (err) {
         console.error(err);
         setError(`There was an error when parsing this authentication credential (see console for more info): ${err}`);
@@ -94,6 +105,11 @@ export const CredentialPreviewer: FunctionComponent<Props> = (props: Props) => {
     setCredential(event.target.value);
   }
 
+  let parsedTitle = 'Parsed';
+  if (decoded?.type) {
+    parsedTitle = `${parsedTitle} ${decoded.type} Response`;
+  }
+
   return (
     <>
       <h3>Registration and Authentication Response Previewer</h3>
@@ -105,10 +121,10 @@ export const CredentialPreviewer: FunctionComponent<Props> = (props: Props) => {
         placeholder={inputPlaceholder}
       />
       {error && <span style={{ color: 'red '}}>{error}</span>}
-      <h4>Parsed</h4>
+      <h4>{parsedTitle}</h4>
       <div style={{ overflowX: 'scroll' }}>
         <ReactJson
-          src={decoded}
+          src={decoded?.value || {}}
           collapseStringsAfterLength={50}
           collapsed={5}
           displayDataTypes={false}
