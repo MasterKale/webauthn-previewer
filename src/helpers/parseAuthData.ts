@@ -29,10 +29,12 @@ export default function parseAuthData(authData: ArrayBuffer): AuthenticatorData 
   const flagsInt: number = flagsBuf[0];
 
   const flags = {
-    userPresent: !!(flagsInt & 0x01),
-    userVerified: !!(flagsInt & 0x04),
-    attestedData: !!(flagsInt & 0x40),
-    extensionData: !!(flagsInt & 0x80),
+    userPresent:    !!(flagsInt & (1 << 0)), // User Presence
+    userVerified:   !!(flagsInt & (1 << 2)), // User Verified
+    backupEligible: !!(flagsInt & (1 << 3)), // Backup Eligibility
+    backupStatus:   !!(flagsInt & (1 << 4)), // Backup State
+    attestedData:   !!(flagsInt & (1 << 6)), // Attested Credential Data Present
+    extensionData:  !!(flagsInt & (1 << 7)), // Extension Data Present
   };
 
   const counterBuf = buffer.slice(0, 4);
