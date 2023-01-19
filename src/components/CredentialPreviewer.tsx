@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useState, useEffect } from 'react';
 import ReactJson from 'react-json-view'
 import { decode } from 'universal-base64url';
-import { RegistrationCredentialJSON, AuthenticationCredentialJSON } from '@simplewebauthn/typescript-types';
+import { RegistrationResponseJSON, AuthenticationResponseJSON } from '@simplewebauthn/typescript-types';
 
 import decodeClientDataJSON from '../helpers/decodeClientDataJSON';
 import decodeAttestationObject from '../helpers/decodeAttestationObject';
@@ -138,15 +138,15 @@ export const CredentialPreviewer: FunctionComponent<Props> = (props: Props) => {
   );
 };
 
-function isRegistrationCredential(credential: any): credential is RegistrationCredentialJSON {
+function isRegistrationCredential(credential: any): credential is RegistrationResponseJSON {
   return !!(credential.response?.attestationObject);
 }
 
-function isAuthenticationCredential(credential: any): credential is AuthenticationCredentialJSON {
+function isAuthenticationCredential(credential: any): credential is AuthenticationResponseJSON {
   return !!(credential.response?.authenticatorData);
 }
 
-function decodeRegistrationCredential(credential: RegistrationCredentialJSON): object {
+function decodeRegistrationCredential(credential: RegistrationResponseJSON): object {
   const { response } = credential;
 
   if (!response.clientDataJSON || !response.attestationObject) {
@@ -172,7 +172,7 @@ function decodeRegistrationCredential(credential: RegistrationCredentialJSON): o
   };
 }
 
-function decodeAuthenticationCredential(credential: AuthenticationCredentialJSON): object {
+function decodeAuthenticationCredential(credential: AuthenticationResponseJSON): object {
   const { response } = credential;
 
   if (
