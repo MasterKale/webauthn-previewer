@@ -162,6 +162,7 @@ function decodeRegistrationCredential(credential: RegistrationResponseJSON): obj
   return {
     ...credential,
     response: {
+      ...response,
       clientDataJSON,
       attestationObject: {
         ...attestationObject,
