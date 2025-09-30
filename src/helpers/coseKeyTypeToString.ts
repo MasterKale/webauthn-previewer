@@ -16,6 +16,8 @@ export default function coseKeyTypeToString(kty: number): string {
     keyType = 'Symmetric';
   } else if (kty === 5) {
     keyType = 'HSS-LMS';
+  } else if (kty === 7) {
+    keyType = 'AKP';
   }
 
   return `${keyType} (${kty})`;

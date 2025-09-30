@@ -15,6 +15,8 @@ enum COSEKEYS {
   // RSA
   mod = -1,
   exp = -2,
+  // ML-DSA
+  pub = -1
 }
 
 export default function parseAuthData(authData: ArrayBuffer): AuthenticatorData {
@@ -81,6 +83,11 @@ export default function parseAuthData(authData: ArrayBuffer): AuthenticatorData 
           Buffer.from(pubKey[COSEKEYS.mod]).toString('base64')
         );
         parsedCredentialPublicKey.exponent = parseInt(Buffer.from(pubKey[COSEKEYS.exp]).toString('hex'), 16);
+      } else if (kty === 7) {
+        // ML-DSA
+        parsedCredentialPublicKey.pub = base64ToBase64URL(
+          Buffer.from(pubKey[COSEKEYS.pub]).toString('base64')
+        );
       } else {
         // Everything else, including EC2 and OKP
         parsedCredentialPublicKey.curve = pubKey[COSEKEYS.crv];
@@ -145,4 +152,6 @@ type ParsedCredentialPublicKey = {
   y?: string;
   modulus?: string;
   exponent?: number;
+  // ML-DSA
+  pub?: string;
 };
